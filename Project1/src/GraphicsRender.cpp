@@ -69,6 +69,19 @@ void GraphicsRender::SortObject()
 
 }
 
+void GraphicsRender::RemoveModels(Model* model)
+{
+
+	std::vector<Model*>::iterator it = std::find(m_Models.begin(), m_Models.end(), model);
+
+	if (it != m_Models.end()) {
+		size_t index = std::distance(m_Models.begin(), it);
+		m_Models.erase(m_Models.begin() + index);
+		m_Shaders.erase(m_Shaders.begin() + index);
+		delete model;
+	}
+}
+
 std::vector<Model*> GraphicsRender::GetModelList()
 {
 

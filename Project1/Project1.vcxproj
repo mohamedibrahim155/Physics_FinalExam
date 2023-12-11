@@ -177,6 +177,7 @@
     <ClCompile Include="src\VertexArray.cpp" />
     <ClCompile Include="src\VertexBuffer.cpp" />
     <ClCompile Include="src\Xwing.cpp" />
+    <ClCompile Include="src\xWingManger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\stb_image.h" />
@@ -220,6 +221,7 @@
     <ClInclude Include="src\VertexBuffer.h" />
     <ClInclude Include="src\VertexBufferLayout.h" />
     <ClInclude Include="src\Xwing.h" />
+    <ClInclude Include="src\xWingManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\color.frag" />

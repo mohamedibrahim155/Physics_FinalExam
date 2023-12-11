@@ -27,7 +27,7 @@ void SpaceShip:: LoadModel()
 	model = new Model("Models/Exam_Models/Stardestroyer/Stardestroyer_CompleteModel_LayersJoined (decimate 10 per, 167,274 vert, 59,360 face).ply");
 	model->id = "SpaceShip";
 	model->transform.SetPosition(glm::vec3(0));
-	model->transform.SetScale(glm::vec3(0.1f));
+	model->transform.SetScale(glm::vec3(0.05f));
 	render->AddModelsAndShader(model, defaultshader);
 
 

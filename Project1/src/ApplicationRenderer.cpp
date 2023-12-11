@@ -176,8 +176,13 @@ void ApplicationRenderer::Start()
 
     Model* Sphere = new Model((char*)"Models/DefaultSphere/Sphere_1_unit_Radius.ply", true);
 
+    xWingModel = new Model("Models/Exam_Models/X-Wing/X-Wing_Attack_xyz_n_uv.ply", true);
 
+    xwingTexture = new Texture();
+    xwingTexture->LoadTexture("Models/Exam_Models/X-Wing/X-Wing-Texture.jpg", "diffuse_Texture");
 
+    Point1 = new Model(*Sphere);
+    Point2 = new Model(*Sphere);
 
      //////////////////////////////////////////////////////////
      //////SPACE SHIP ENTITY
@@ -186,7 +191,57 @@ void ApplicationRenderer::Start()
 
 
      xWing = new Xwing(render, defaultShader, PhysicsEngine);
-     xWing->LoadModel();
+     xWing->LoadModel(xWingModel,xwingTexture);
+
+     cAABB  spaceShipAABB = spaceshipEntity->SpaceShipPhysics->UpdateAABB();
+     glm::vec3 center = 0.5f * (spaceShipAABB.minV + spaceShipAABB.maxV);
+
+     float minX = spaceShipAABB.minV.x - 20;
+     float minY = spaceShipAABB.minV.y-20;
+     float minZ = spaceShipAABB.minV.z-20;
+
+     float centerX = center.x;
+
+     float maxX = spaceShipAABB.maxV.x + 20;
+     float maxY = spaceShipAABB.maxV.y + 20;
+     float maxZ = spaceShipAABB.maxV.z + 20;
+
+     float getRandomNegX = GetRandomFloatNumber( minX, spaceShipAABB.minV.x);
+     float getRandomNegY = GetRandomFloatNumber( minY, spaceShipAABB.minV.y);
+     float getRandomNegZ = GetRandomFloatNumber( minZ, spaceShipAABB.minV.z);
+
+
+     float getRandomPosX = GetRandomFloatNumber(spaceShipAABB.maxV.x, maxX);
+     float getRandomPosY = GetRandomFloatNumber(spaceShipAABB.maxV.y, maxY);
+     float getRandomPosZ = GetRandomFloatNumber(spaceShipAABB.maxV.z, maxZ);
+
+     glm::vec3 randomDir = GetRandomDirection();
+     
+     glm::vec3 getOpposite = -randomDir;
+     randomDir = (randomDir+center) * 40.0f;
+     getOpposite = (getOpposite + center) * 40.0f;
+
+     glm::vec3 offset(spaceShipAABB.minV);
+    // glm::vec3 SpaceShipCenter = center + offset;
+    // glm::vec3 SpaceShipCenter = center + glm::vec3(getRandomNegX, getRandomNegY, getRandomNegZ);
+    // glm::vec3 SpaceShipCenter2 = center + glm::vec3(getRandomPosX, getRandomPosY, getRandomPosZ);
+     
+     glm::vec3 SpaceShipCenter = randomDir;
+     glm::vec3 SpaceShipCenter2 = getOpposite;
+    //  glm::vec3 SpaceShipCenter = GetRandomPoint1();
+  //   glm::vec3 SpaceShipCenter2 = GetRandomPoint2();
+    
+
+     Point1->transform.SetPosition(SpaceShipCenter);
+     Point2->transform.SetPosition(SpaceShipCenter2);
+
+     xWing->StartPosition = Point1->transform.position;
+     xWing->EndPosition = Point2->transform.position;
+
+     xWing->model->transform.SetPosition(xWing->StartPosition);
+
+     render.AddModelsAndShader(Point1, defaultShader);
+     render.AddModelsAndShader(Point2, defaultShader);
 
 
   
@@ -258,7 +313,7 @@ void ApplicationRenderer::Render()
 
         ProcessInput(window);
 
-        glm::mat4 _projection = glm::perspective(glm::radians(camera.Zoom), (float)windowWidth / (float)WindowHeight, 0.1f, 100.0f);
+        glm::mat4 _projection = glm::perspective(glm::radians(camera.Zoom), (float)windowWidth / (float)WindowHeight, 0.1f, 1000.0f);
         glm::mat4 _view = camera.GetViewMatrix();
         glm::mat4 _skyboxview = glm::mat4(glm::mat3(camera.GetViewMatrix()));
 
@@ -445,6 +500,83 @@ void ApplicationRenderer::DrawDebugBvhNodeAABB(BvhNode* node)
          InputManager::GetInstance().OnKeyHeld(key);
      }
 
+     if (key == GLFW_KEY_2 && action == GLFW_PRESS)
+     {
+
+         if (DebugLineModels.size()>0)
+         {
+             for (size_t i = 0; i < DebugLineModels.size(); i++)
+             {
+                 render.RemoveModels(DebugLineModels[i]);
+             }
+         }
+         DebugLineModels.clear();
+
+         cAABB  spaceShipAABB = spaceshipEntity->SpaceShipPhysics->UpdateAABB();
+         glm::vec3 center = 0.5f * (spaceShipAABB.minV + spaceShipAABB.maxV);
+
+         float minX = spaceShipAABB.minV.x - 20;
+         float minY = spaceShipAABB.minV.y - 20;
+         float minZ = spaceShipAABB.minV.z - 20;
+
+         float maxX = spaceShipAABB.maxV.x + 20;
+         float maxY = spaceShipAABB.maxV.y + 20;
+         float maxZ = spaceShipAABB.maxV.z + 20;
+
+         float getRandomNegX = GetRandomFloatNumber(minX, spaceShipAABB.minV.x);
+         float getRandomNegY = GetRandomFloatNumber(minY, spaceShipAABB.minV.y);
+         float getRandomNegZ = GetRandomFloatNumber(minZ, spaceShipAABB.minV.z);
+
+
+         float getRandomPosX = GetRandomFloatNumber(spaceShipAABB.maxV.x, maxX);
+         float getRandomPosY = GetRandomFloatNumber(spaceShipAABB.maxV.y, maxY);
+         float getRandomPosZ = GetRandomFloatNumber(spaceShipAABB.maxV.z, maxZ);
+
+         glm::vec3 randomDir = GetRandomDirection();
+
+         glm::vec3 getOpposite = -randomDir;
+         randomDir = (randomDir + center) * 40.0f;
+         getOpposite = (getOpposite + center) * 40.0f;
+
+         glm::vec3 offset(spaceShipAABB.minV);
+         // glm::vec3 SpaceShipCenter = center + offset;
+      //   glm::vec3 SpaceShipCenter = center + glm::vec3(getRandomNegX, getRandomNegY, getRandomNegZ);
+      //   glm::vec3 SpaceShipCenter2 = center + glm::vec3(getRandomPosX, getRandomPosY, getRandomPosZ);
+
+         glm::vec3 SpaceShipCenter = GetRandomPoint1();
+         glm::vec3 SpaceShipCenter2 = GetRandomPoint2();
+
+         //glm::vec3 SpaceShipCenter = randomDir;
+       //  glm::vec3 SpaceShipCenter2 = getOpposite;
+
+         Point1->transform.SetPosition(SpaceShipCenter);
+         Point2->transform.SetPosition(SpaceShipCenter2);
+
+         xWing->StartPosition = Point1->transform.position;
+         xWing->EndPosition = Point2->transform.position;
+
+         xWing->model->transform.SetPosition(xWing->StartPosition);
+
+         float distance = glm::distance(SpaceShipCenter, SpaceShipCenter2);
+         float stepSize = 2;
+         int breakdowns = static_cast<int>(distance / stepSize);
+
+         glm::vec3 direction = glm::normalize(SpaceShipCenter2 - SpaceShipCenter);
+
+         for (int i = 0; i <= breakdowns; ++i) {
+             Model* model = new Model(*defaultBox);
+             model->transform.position = SpaceShipCenter + (static_cast<float>(i) / breakdowns) * distance * direction;
+             model->transform.scale = glm::vec3(0.1);
+           
+             render.AddModelsAndShader(model, defaultShader);
+
+             DebugLineModels.push_back(model);
+         }
+
+         
+
+
+     }
          /*if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
          {
              recusiveCount--;

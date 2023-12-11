@@ -79,7 +79,16 @@ private:
 
 
 	Model* defaultBox;
-	Model* CityModel;
+	Model* defaultSphere;
+
+
+	Model* Point1;
+	Model* Point2;
+
+	Model* xWingModel;
+	Texture* xwingTexture;
+
+	std::vector<Model*> DebugLineModels;
 
 	LoadModelsExternal m_loadModels;
 

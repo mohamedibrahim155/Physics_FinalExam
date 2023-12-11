@@ -60,6 +60,8 @@ public:
 	void SetLightShader(Shader* shader);
 	void SortObject();
 	
+	void RemoveModels(Model* model);
+
 	std::vector<Model*> GetModelList();
 
 	void DrawAABB(const modelAABB& aabb);
