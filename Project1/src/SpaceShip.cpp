@@ -64,7 +64,7 @@ void SpaceShip::Update(float deltaTime)
 {
 
 	glm::vec3 forward = model->transform.GetForward();
-	camera->SetCameraPosition(model->transform.position + forward  *followDistance + glm::vec3(0, yoffset, 0));
+	camera->transform.SetPosition(model->transform.position + forward  *followDistance + glm::vec3(0, yoffset, 0));
 	DrawAABBCollision(SpaceShipPhysics);
 }
 
@@ -185,7 +185,7 @@ void SpaceShip::OnKeyPressed(const int& key)
 
 	}
 
-	camera->SetCameraPosition(model->transform.position + model->transform.GetForward() * followDistance + glm::vec3(0, yoffset, 0));
+	camera->transform.SetPosition(model->transform.position + model->transform.GetForward() * followDistance + glm::vec3(0, yoffset, 0));
 
     if (key == GLFW_KEY_0)
 	{
