@@ -191,6 +191,7 @@ void ApplicationRenderer::Start()
 
 
      xWing = new Xwing(render, defaultShader, PhysicsEngine);
+     xWing->SetDebugSphereModel(Sphere);
      xWing->LoadModel(xWingModel,xwingTexture);
 
      cAABB  spaceShipAABB = spaceshipEntity->SpaceShipPhysics->UpdateAABB();
@@ -390,6 +391,7 @@ void ApplicationRenderer::PostRender()
 
     spaceshipEntity->Update(deltaTime);
  
+    xWing->Update(deltaTime);
   //  DrawDebugModelAABB(spaceshipEntity->SpaceShipPhysics->UpdateAABB());
 }
 
@@ -552,10 +554,19 @@ void ApplicationRenderer::DrawDebugBvhNodeAABB(BvhNode* node)
          Point1->transform.SetPosition(SpaceShipCenter);
          Point2->transform.SetPosition(SpaceShipCenter2);
 
+         std::cout << " POINT A: X: " << Point1->transform.position.x << " Y: " << Point1->transform.position.y << " Z: " << Point1->transform.position.z << std::endl;
+         std::cout << " POINT B: X: " << Point2->transform.position.x << " Y: " << Point2->transform.position.y << " Z: " << Point2->transform.position.z << std::endl;
+
          xWing->StartPosition = Point1->transform.position;
          xWing->EndPosition = Point2->transform.position;
 
          xWing->model->transform.SetPosition(xWing->StartPosition);
+
+         glm::vec3 forward = glm::normalize(Point2->transform.position - xWing->model->transform.position);
+         glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0, 1, 0), forward));
+         glm::vec3 up = glm::normalize(glm::cross(forward, right));
+
+         xWing->model->transform.SetOrientationFromDirections(up, right);
 
          float distance = glm::distance(SpaceShipCenter, SpaceShipCenter2);
          float stepSize = 2;

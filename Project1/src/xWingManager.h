@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Xwing.h"
+#include "SpaceShip.h"
 
 class XWingManager
 {
@@ -12,8 +13,9 @@ public:
 	std::vector<Xwing*> xwingList;
 
 	void SpawnXwing();
-
 	void Removexwing(Xwing* xwing);
+
+	void SetSpaceShip(SpaceShip* spaceshipEntity);
 private:
 
 	GraphicsRender* render;
@@ -26,5 +28,6 @@ private:
 
 	Model* Point1;
 	Model* Point2;
+	SpaceShip* spaceshipEntity;
 };
 

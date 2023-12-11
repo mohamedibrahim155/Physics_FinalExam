@@ -8,7 +8,7 @@
 enum xWingState
 {
 	FOLLOW =0,
-	DISECT
+	DEFLECT
 };
 class Xwing : public iInputListener
 {
@@ -21,9 +21,14 @@ public:
 
 
 	Model* model;
-	PhysicsObject* SpaceShipPhysics;
+	PhysicsObject* xWingPhysics;
+
+	Model* debugSphere;
+	PhysicsObject* debugSpherePhyiscs;
+
 	xWingState state = FOLLOW;
 	void LoadModel(Model* copyModel, Texture* copyTexutre);
+	void SetDebugSphereModel(Model* model);
 
 	void Update(float deltaTime);
 	void DrawAABBCollision(PhysicsObject* physicsObject);
@@ -38,7 +43,7 @@ private:
 	Shader* defaultshader;
 	PhysicsEngine* engine;
 
-	float speed = 2;
+	float speed = 8;
 
 	void OnKeyPressed(const int& key) override;
 	void OnKeyReleased(const int& key) override;

@@ -31,21 +31,73 @@ void Xwing::LoadModel(Model* copyModel, Texture* copyTexutre)
 	//loadWingTexture->LoadTexture("Models/Exam_Models/X-Wing/X-Wing-Texture.jpg", "diffuse_Texture");
 	model->meshes[0]->meshMaterial->diffuseTexture = copyTexutre;
 	model->id = "Xwing";
-	model->transform.SetPosition(glm::vec3(0, 5, 0));
 	model->transform.SetScale(glm::vec3(0.05f));
 	render->AddModelsAndShader(model, defaultshader);
 
 
+	xWingPhysics = new PhysicsObject(model);
 
+	xWingPhysics->Initialize(SPHERE, true, DYNAMIC);
+	xWingPhysics->gravityValue = 0;
+
+	xWingPhysics->DoCollisionCall([this](PhysicsObject* other)
+		{
+			if (other->model->id == "SpaceShip")
+			{
+				std::cout << " X Wing sphere collided with spaceShip" << std::endl;
+			}
+		});
+
+	engine->AddPhysicsObjects(xWingPhysics);
+
+
+
+	debugSpherePhyiscs = new PhysicsObject(debugSphere);
+
+	debugSpherePhyiscs->Initialize(SPHERE, true, DYNAMIC);
+	debugSpherePhyiscs->gravityValue = 0;
+
+	debugSpherePhyiscs->DoCollisionCall([this](PhysicsObject* other)
+		{
+			if (other->model->id =="Xwing")
+			{
+
+			}
+			if (other->model->id == "SpaceShip")
+			{
+				std::cout << "Default sphere collided with spaceShip" << std::endl;
+			
+				glm::vec3 oppostireDirection = -Direction;
+				Direction = oppostireDirection;
+				state = DEFLECT;
+				debugSpherePhyiscs->collisionCallbool = false;
+				debugSpherePhyiscs->collisionCallback = nullptr;
+
+			}
+		});
+
+	engine->AddPhysicsObjects(debugSpherePhyiscs);
+}
+
+void Xwing::SetDebugSphereModel(Model* model)
+{
+	debugSphere = new Model(*model);
+	debugSphere->isWireFrame = true;
+	debugSphere->id = "XwingSphere";
+	render->AddModelsAndShader(debugSphere, defaultshader);
 }
 
 void Xwing::Update(float deltaTime)
 {
 	if (state ==FOLLOW)
 	{
-		Direction = glm::normalize(EndPosition - StartPosition);
+		Direction = model->transform.GetForward();
 	}
-	SpaceShipPhysics->velocity = Direction;
+	
+
+	xWingPhysics->velocity = Direction * speed;
+
+	debugSphere->transform.SetPosition(model->transform.position);
 }
 
 void Xwing::OnKeyPressed(const int& key)
