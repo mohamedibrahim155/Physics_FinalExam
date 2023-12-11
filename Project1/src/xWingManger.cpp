@@ -80,7 +80,7 @@ void XWingManager::SpawnXwing()
 
 
 	Xwing* newXwing = new Xwing(render, defaultshader, engine);
-
+    newXwing->SetCamera(camera);
     newXwing->SetDebugSphereModel(Point1);
 
 

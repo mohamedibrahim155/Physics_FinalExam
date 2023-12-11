@@ -32,7 +32,7 @@ public:
 
 	void Update(float deltaTime);
 	void DrawAABBCollision(PhysicsObject* physicsObject);
-
+	void SetCamera(Camera* camera);
 	glm::vec3 StartPosition;
 	glm::vec3 EndPosition;
 
@@ -42,8 +42,10 @@ private:
 	GraphicsRender* render;
 	Shader* defaultshader;
 	PhysicsEngine* engine;
+	Camera* camera;
+	float speed = 20;
+	float debugSphereDistance = 3.5f;
 
-	float speed = 8;
 
 	void OnKeyPressed(const int& key) override;
 	void OnKeyReleased(const int& key) override;

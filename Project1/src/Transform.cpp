@@ -122,6 +122,13 @@ void Transform::SetOrientationFromDirections(glm::vec3 newUp, glm::vec3 newRight
     this->SetQuatRotation(rotationQuat);
 }
 
+void  Transform:: SetOrientationTowardsDirection(const glm::vec3& targetDirection) {
+    // Calculate the rotation quaternion to align the forward direction with the target direction
+    glm::quat rotationQuat = glm::quatLookAt(targetDirection, this->GetUp());
+
+    // Set the quaternion rotation
+    SetQuatRotation(rotationQuat);
+}
 
 
 void Transform::UpdateQuaternionFromEuler()

@@ -34,6 +34,8 @@ public:
     void SetRight(glm::vec3 newRight);
     void SetForward(glm::vec3 newForward);
     void SetOrientationFromDirections(glm::vec3 newUp, glm::vec3 newRight);
+    void  SetOrientationTowardsDirection(const glm::vec3& targetDirection);
+
 
 private:
 

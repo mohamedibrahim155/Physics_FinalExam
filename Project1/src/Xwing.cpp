@@ -70,6 +70,15 @@ void Xwing::LoadModel(Model* copyModel, Texture* copyTexutre)
 				glm::vec3 oppostireDirection = -Direction;
 				Direction = oppostireDirection;
 				state = DEFLECT;
+				model->transform.SetOrientationTowardsDirection(oppostireDirection);
+
+				/*glm::vec3 cameraForwad = model->transform.GetForward();
+
+				glm::vec3 cameraright = glm::normalize(glm::cross(glm::vec3(0, 1, 0), cameraForwad));
+				glm::vec3 cameraup = glm::normalize(glm::cross(cameraForwad, cameraright));
+
+				camera->transform.SetOrientationFromDirections(cameraup, cameraright);*/
+
 				debugSpherePhyiscs->collisionCallbool = false;
 				debugSpherePhyiscs->collisionCallback = nullptr;
 
@@ -96,8 +105,13 @@ void Xwing::Update(float deltaTime)
 	
 
 	xWingPhysics->velocity = Direction * speed;
+	glm::vec3 forward = model->transform.GetForward() * debugSphereDistance;
+	debugSphere->transform.SetPosition(model->transform.position + forward);
+}
 
-	debugSphere->transform.SetPosition(model->transform.position);
+void Xwing::SetCamera(Camera* camera)
+{
+	this->camera = camera;
 }
 
 void Xwing::OnKeyPressed(const int& key)
