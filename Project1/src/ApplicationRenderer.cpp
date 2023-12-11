@@ -244,6 +244,7 @@ void ApplicationRenderer::Start()
 
      xWing->model->transform.SetPosition(xWing->StartPosition);
 
+
      render.AddModelsAndShader(Point1, defaultShader);
      render.AddModelsAndShader(Point2, defaultShader);
 
@@ -395,6 +396,11 @@ void ApplicationRenderer::PostRender()
     spaceshipEntity->Update(deltaTime);
  
     xWing->Update(deltaTime);
+
+
+    glm::vec3 forward = -xWing->model->transform.GetForward() *5.0f;
+
+    camera.transform.SetPosition(xWing->model->transform.position + forward + glm::vec3(0, 1, 0));
   //  DrawDebugModelAABB(spaceshipEntity->SpaceShipPhysics->UpdateAABB());
 }
 
@@ -570,6 +576,16 @@ void ApplicationRenderer::DrawDebugBvhNodeAABB(BvhNode* node)
          glm::vec3 up = glm::normalize(glm::cross(forward, right));
 
          xWing->model->transform.SetOrientationFromDirections(up, right);
+
+        
+        // camera.transform.SetOrientationFromDirections(up, right);
+
+         glm::vec3 cameraForwad = xWing->model->transform.GetForward();
+
+         glm::vec3 cameraright = glm::normalize(glm::cross(glm::vec3(0, 1, 0), cameraForwad));
+         glm::vec3 cameraup = glm::normalize(glm::cross(cameraForwad, cameraright));
+
+         camera.transform.SetOrientationFromDirections(cameraup, cameraright);
 
          float distance = glm::distance(SpaceShipCenter, SpaceShipCenter2);
          float stepSize = 2;
