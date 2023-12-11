@@ -18,6 +18,7 @@
 #include "CameraMovement.h"
 #include "SpaceShip.h"
 #include "InputManager.h"
+#include "Xwing.h"
 struct ModelData
 {
 
@@ -65,7 +66,6 @@ private:
 	GLFWwindow* window;
 
 	Camera camera;
-	CameraMovement moveCam;
 
 	GraphicsRender render;
 	LightManager lightManager;
@@ -88,6 +88,7 @@ private:
 
 
 	SpaceShip* spaceshipEntity;
+	Xwing* xWing;
 
 	 int windowWidth;
 	 int  WindowHeight;

@@ -169,6 +169,7 @@ void ApplicationRenderer::Start()
     render.AssignCamera(&camera);
 
     defaultBox = new Model("Models/Box/DefaultCube.fbx");
+
     render.SetDefaultCube(defaultBox);
 
     render.SetLightShader(lightShader);
@@ -176,39 +177,6 @@ void ApplicationRenderer::Start()
     Model* Sphere = new Model((char*)"Models/DefaultSphere/Sphere_1_unit_Radius.ply", true);
 
 
-    //render.AddModelsAndShader(CamPlaceholder, defaultShader);
-     Sphere->transform.position.x += 2;
-
-    
-
-
-     Model* directionLightModel = new Model(*Sphere);
-     directionLightModel->transform.SetPosition(glm::vec3(1.0f, 3.0f, 0.0f));
-     directionLightModel->transform.SetRotation(glm::vec3(-60, 0, 0));
-     directionLightModel->transform.SetScale(glm::vec3(0.1f));
-
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-
-     modelData = loadModelDataFromFile("Model.txt");
-     CityModel = new Model("Models/White//White.obj",false);
-     CityModel->transform.SetPosition(glm::vec3(0,-15,0));
-     CityModel->transform.SetRotation(glm::vec3(0,0,0));
-     CityModel->transform.SetScale(glm::vec3(0.1f));
-     render.AddModelsAndShader(CityModel, defaultShader);
-
-     cityPhysics = new PhysicsObject(CityModel);
-     cityPhysics->Initialize(MESH_TRIANGLES,false,STATIC);
-     PhysicsEngine.AddPhysicsObjects(cityPhysics);
-
-
-
-
-
-
-   //  DrawDebugModelAABB(cityPhysics->GetModelAABB());
 
 
      //////////////////////////////////////////////////////////
@@ -217,15 +185,25 @@ void ApplicationRenderer::Start()
      spaceshipEntity->LoadModel();
 
 
+     xWing = new Xwing(render, defaultShader, PhysicsEngine);
+     xWing->LoadModel();
+
+
+  
+
 #pragma region Lights
 
-Light directionLight;
-directionLight.lightType = LightType::DIRECTION_LIGHT;
-directionLight.lightModel = directionLightModel;
-directionLight.ambient =  glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
-directionLight.diffuse =  glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
-directionLight.specular = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
-directionLight.intensity = 0.5f;
+  Model* directionLightModel = new Model(*Sphere);
+  directionLightModel->transform.SetPosition(glm::vec3(0, 5, 0));
+  directionLightModel->transform.SetRotation(glm::vec3(-60, 0, 0));
+  directionLightModel->transform.SetScale(glm::vec3(0.1f));
+   Light directionLight;
+   directionLight.lightType = LightType::DIRECTION_LIGHT;
+   directionLight.lightModel = directionLightModel;
+   directionLight.ambient =  glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
+   directionLight.diffuse =  glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
+   directionLight.specular = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
+   directionLight.intensity = 0.5f;
 
 
 
@@ -251,7 +229,6 @@ directionLight.intensity = 0.5f;
      defaultShader->Bind();
      defaultShader->setInt("skybox", 0);
 
-     moveCam.AssignCam(&camera);
 
     
 }
@@ -293,7 +270,7 @@ void ApplicationRenderer::Render()
         SkyboxShader->setMat4("view", _skyboxview);
         SkyboxShader->setMat4("projection", _projection);
 
-       // skybox->Skyboxrender();
+        skybox->Skyboxrender();
         glDepthFunc(GL_LESS); 
 
 
@@ -372,24 +349,24 @@ void ApplicationRenderer::ProcessInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    float cameraSpeed=2;
+    float cameraSpeed=25;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-       // camera.ProcessKeyboard(FORWARD, deltaTime * cameraSpeed);
+        camera.ProcessKeyboard(FORWARD, deltaTime * cameraSpeed);
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-     //   camera.ProcessKeyboard(BACKWARD, deltaTime * cameraSpeed);
+        camera.ProcessKeyboard(BACKWARD, deltaTime * cameraSpeed);
     }
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-      //  camera.ProcessKeyboard(LEFT, deltaTime * cameraSpeed);
+       camera.ProcessKeyboard(LEFT, deltaTime * cameraSpeed);
 
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-      //  camera.ProcessKeyboard(RIGHT, deltaTime * cameraSpeed);
+        camera.ProcessKeyboard(RIGHT, deltaTime * cameraSpeed);
 
     }
 

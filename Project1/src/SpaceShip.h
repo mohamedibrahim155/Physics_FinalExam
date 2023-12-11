@@ -19,6 +19,10 @@ public:
 	void DrawAABBCollision(PhysicsObject* physicsObject);
 	void SpaceShipInputs(GLFWwindow* window, float deltaTime);
 
+	void DrawDebugBvhNodeAABB(BvhNode* node);
+
+
+
 private:
 	GraphicsRender* render;
 	Shader* defaultshader;
