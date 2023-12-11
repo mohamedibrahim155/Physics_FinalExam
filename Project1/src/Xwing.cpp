@@ -78,6 +78,7 @@ void Xwing::LoadModel(Model* copyModel, Texture* copyTexutre)
 				glm::vec3 cameraup = glm::normalize(glm::cross(cameraForwad, cameraright));
 
 				camera->transform.SetOrientationFromDirections(cameraup, cameraright);*/
+				camera->transform.SetOrientationTowardsDirection(oppostireDirection);
 
 				debugSpherePhyiscs->collisionCallbool = false;
 				debugSpherePhyiscs->collisionCallback = nullptr;

@@ -401,7 +401,7 @@ void ApplicationRenderer::PostRender()
 
     glm::vec3 forward = -xWing->model->transform.GetForward() *5.0f;
 
-//    camera.transform.SetPosition(xWing->model->transform.position + forward + glm::vec3(0, 1, 0));
+    camera.transform.SetPosition(xWing->model->transform.position + forward + glm::vec3(0, 1, 0));
   //  DrawDebugModelAABB(spaceshipEntity->SpaceShipPhysics->UpdateAABB());
 }
 
@@ -586,7 +586,7 @@ void ApplicationRenderer::DrawDebugBvhNodeAABB(BvhNode* node)
          glm::vec3 cameraright = glm::normalize(glm::cross(glm::vec3(0, 1, 0), cameraForwad));
          glm::vec3 cameraup = glm::normalize(glm::cross(cameraForwad, cameraright));
 
-      //   camera.transform.SetOrientationFromDirections(cameraup, cameraright);
+         camera.transform.SetOrientationFromDirections(cameraup, cameraright);
 
          float distance = glm::distance(SpaceShipCenter, SpaceShipCenter2);
          float stepSize = 2;
@@ -609,7 +609,7 @@ void ApplicationRenderer::DrawDebugBvhNodeAABB(BvhNode* node)
 
      }
 
-     if (key == GLFW_KEY_2 && action == GLFW_PRESS) 
+     if (key == GLFW_KEY_3 && action == GLFW_PRESS) 
      {
 
      }
