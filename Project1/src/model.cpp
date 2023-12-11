@@ -49,6 +49,7 @@ void Model::Draw(Shader& shader)
         meshes[i]->SetTransparency(isTransparant);
         meshes[i]->SetCutOff(isCutOut);
         //meshes[i]->meshDraw(shader);
+        meshes[i]->isWireFrame = isWireFrame;
         meshes[i]->MeshDraw(&shader);
     }
 }

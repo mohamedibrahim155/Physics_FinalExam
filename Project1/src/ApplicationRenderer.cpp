@@ -186,7 +186,10 @@ void ApplicationRenderer::Start()
 
      //////////////////////////////////////////////////////////
      //////SPACE SHIP ENTITY
+
+
      spaceshipEntity = new SpaceShip(render, defaultShader, PhysicsEngine,camera);
+     spaceshipEntity->SetDeflectorModels(Sphere, Sphere);
      spaceshipEntity->LoadModel();
 
 

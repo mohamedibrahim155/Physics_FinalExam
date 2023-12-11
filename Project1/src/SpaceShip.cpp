@@ -57,6 +57,18 @@ void SpaceShip:: LoadModel()
 
 
 
+	//PhysicsObject* deflector1Physics = new PhysicsObject(Deflector1Model);
+
+	//deflector1Physics->Initialize(SPHERE, true, STATIC);
+	//deflector1Physics->gravityValue = 0;
+
+	//engine->AddPhysicsObjects(deflector1Physics);
+
+	//PhysicsObject* deflector2Physics = new PhysicsObject(Deflector2Model);
+	//deflector2Physics->Initialize(SPHERE, true, STATIC);
+	//deflector2Physics->gravityValue = 0;
+
+	//engine->AddPhysicsObjects(deflector2Physics);
 }
 
 void SpaceShip::Update(float deltaTime)
@@ -154,6 +166,22 @@ void SpaceShip::DrawDebugBvhNodeAABB(BvhNode* node)
 	DrawDebugBvhNodeAABB(node->rightChild);
 
 
+}
+
+void SpaceShip::SetDeflectorModels(Model* deflector1, Model* deflector2)
+{
+	this->Deflector1Model = new Model(*deflector1);
+	Deflector1Model->id = "DEFLECTOR";
+	Deflector1Model->transform.SetPosition(glm::vec3(5.25f, 12.5f, 27.8f));
+	Deflector1Model->transform.SetScale(glm::vec3(1.1f));
+	render->AddModelsAndShader(Deflector1Model, defaultshader);
+
+
+	this->Deflector2Model = new Model(*deflector2);
+	Deflector2Model->id = "DEFLECTOR";
+	Deflector2Model->transform.SetPosition(glm::vec3(-5.25f, 12.5f, 27.8f));
+	Deflector2Model->transform.SetScale(glm::vec3(1.1f));
+	render->AddModelsAndShader(Deflector2Model, defaultshader);
 }
 
 void SpaceShip::OnKeyPressed(const int& key)

@@ -21,7 +21,7 @@ public:
 
 	void DrawDebugBvhNodeAABB(BvhNode* node);
 
-
+	void SetDeflectorModels(Model* deflector1, Model* deflector2);
 
 private:
 	GraphicsRender* render;
@@ -37,6 +37,10 @@ private:
 	float rotationAngle = 10;
 
 	bool isDebugAAABDraw;
+
+	Model* Deflector1Model;
+	Model* Deflector2Model;
+
 
 	void OnKeyPressed(const int& key) override;
 	void OnKeyReleased(const int& key) override;
