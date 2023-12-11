@@ -19,6 +19,18 @@ XWingManager::XWingManager(GraphicsRender& render, Shader* shader, PhysicsEngine
 
 	Point1 = new Model("Models/DefaultSphere/Sphere_1_unit_Radius.ply");
 	Point2 = new Model("Models/DefaultSphere/Sphere_1_unit_Radius.ply");
+
+    bulletModel = new Model("Models/Exam_Models/TearDropBullet.ply");
+
+    defaultSphere = new Model("Models/DefaultSphere/Sphere_1_unit_Radius.ply");
+
+    deflector1 = new Deflector(this->render, defaultshader, this->engine);
+    deflector1->SetSide(false);
+    deflector1->LoadDeflector(defaultSphere, glm::vec3(5.25f, 12.5f, 27.8f));     // left 
+
+    deflector2 = new Deflector(this->render, defaultshader, this->engine);
+    deflector1->SetSide(true);
+    deflector2->LoadDeflector(defaultSphere, glm::vec3(-5.25f, 12.5f, 27.8f));    // right
 }
 
 XWingManager::~XWingManager()
@@ -43,6 +55,14 @@ void XWingManager::SetRenderers(GraphicsRender& render, Shader* shader, PhysicsE
     bulletModel = new Model("Models/Exam_Models/TearDropBullet.ply");
 
     defaultSphere = new Model("Models/DefaultSphere/Sphere_1_unit_Radius.ply");
+
+    deflector1 = new Deflector(this->render, defaultshader, this->engine);
+    deflector1->SetSide(false);
+    deflector1->LoadDeflector(defaultSphere, glm::vec3(5.25f, 12.5f, 27.8f));     // left 
+
+    deflector2 = new Deflector(this->render, defaultshader, this->engine);
+    deflector1->SetSide(true);
+    deflector2->LoadDeflector(defaultSphere, glm::vec3(-5.25f, 12.5f, 27.8f));    // right
 }
 
 void XWingManager::SpawnXwing()
@@ -192,6 +212,33 @@ void XWingManager::SetSpaceShip(SpaceShip* spaceshipEntity)
     this->spaceshipEntity = spaceshipEntity;
 }
 
+void XWingManager::ReduceHealth(bool isRight)
+{
+    if (isRight)
+    {
+
+        TotalhealthRight -= 25;
+        if (TotalhealthRight < 0)
+        {
+            TotalhealthRight = 0;
+        }
+        std::cout << " TOTAL HEALTH RIGHT : " << TotalhealthRight << std::endl;
+    }
+    else
+    {
+        TotalhealthLeft -= 25;
+
+        if (TotalhealthLeft <= 0)
+        {
+            TotalhealthLeft = 0;
+        }
+        std::cout << " TOTAL HEALTH LEFT : " << TotalhealthLeft << std::endl;
+    }
+
+
+    isGameOver = (TotalhealthLeft == 0 && TotalhealthRight == 0) ? true : false;
+}
+
 void XWingManager::Update(float deltaTime)
 {
     for (size_t i = 0; i < xwingList.size(); i++)
@@ -212,6 +259,11 @@ void XWingManager::Update(float deltaTime)
      
    // glm::vec3 backward = -currentCameraLookingTransform->transform.GetForward() * 5.0f;
    // camera->transform.SetPosition(currentCameraLookingTransform->transform.position + backward + glm::vec3(0, 1, 0));
+}
+
+bool XWingManager::IsGameOverState()
+{
+    return isGameOver;
 }
 
 XWingManager& XWingManager::GetInstance()

@@ -192,11 +192,16 @@ void ApplicationRenderer::Start()
 
 
      spaceshipEntity = new SpaceShip(render, defaultShader, PhysicsEngine,camera);
-     spaceshipEntity->SetDeflectorModels(Sphere, Sphere);
+   //  spaceshipEntity->SetDeflectorModels(Sphere, Sphere);
      spaceshipEntity->LoadModel();
 
+
+
      xWingManager = new XWingManager(render, defaultShader, PhysicsEngine, camera);
+
      xWingManager->SetSpaceShip(spaceshipEntity);
+     XWingManager::GetInstance().SetSpaceShip(spaceshipEntity);
+
 
      xWing = new Xwing(render, defaultShader, PhysicsEngine);
      xWing->SetDebugSphereModel(Sphere);

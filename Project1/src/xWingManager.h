@@ -3,6 +3,8 @@
 #include "Xwing.h"
 #include "SpaceShip.h"
 #include "Bullet.h";
+#include "Deflector.h"
+
 class XWingManager
 {
 public:
@@ -22,9 +24,10 @@ public:
 
 
 	void SetSpaceShip(SpaceShip* spaceshipEntity);
+	void ReduceHealth(bool isRight);
 
 	void Update(float deltaTime);
-
+	bool IsGameOverState();
 	static XWingManager& GetInstance();
 private:
 
@@ -46,6 +49,15 @@ private:
 
 	SpaceShip* spaceshipEntity;
 
+	Deflector* deflector1;
+	Deflector* deflector2;
+
 	Model* currentCameraLookingTransform;
+
+	int TotalhealthRight = 100;
+	int TotalhealthLeft = 100;
+
+	bool isGameOver = false;
+
 };
 

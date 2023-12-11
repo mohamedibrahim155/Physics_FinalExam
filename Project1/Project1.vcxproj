@@ -142,6 +142,7 @@
   <ItemGroup>
     <ClCompile Include="..\Dependencies\glad\src\glad.c" />
     <ClCompile Include="src\Bullet.cpp" />
+    <ClCompile Include="src\Deflector.cpp" />
     <ClCompile Include="src\InputManager.cpp" />
     <ClCompile Include="src\SpaceShip.cpp" />
     <ClCompile Include="src\PhysicsCollisionTypes.cpp" />
@@ -183,6 +184,7 @@
   <ItemGroup>
     <ClInclude Include="..\stb_image.h" />
     <ClInclude Include="src\Bullet.h" />
+    <ClInclude Include="src\Deflector.h" />
     <ClInclude Include="src\iInputListener.h" />
     <ClInclude Include="src\InputManager.h" />
     <ClInclude Include="src\SpaceShip.h" />

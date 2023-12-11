@@ -32,6 +32,36 @@ void Bullet::LoadBullet(Model* _model)
 
 	BulletPhysics->DoCollisionCall([this](PhysicsObject* other)
 		{
+			if (other->model->id == "DEFLECTOR_RIGHT")
+			{
+				std::cout << "Bullet hit Deflector left side" << std::endl;
+				glm::vec3 collisionPoint = engine->collisionPoints[0];
+
+				// REDUCE HEALTH
+				XWingManager::GetInstance().ReduceHealth(true);
+				BulletPhysics->collisionCallback = nullptr;
+				BulletPhysics->collisionCallbool = false;
+				isDestroyed = true;
+				model->isVisible = false;
+
+				BulletPhysics->mode = STATIC;
+
+			}
+			if (other->model->id == "DEFLECTOR_LEFT")
+			{
+				std::cout << "Bullet hit Deflector Right side" << std::endl;
+				glm::vec3 collisionPoint = engine->collisionPoints[0];
+
+				// REDUCE HEALTH
+				XWingManager::GetInstance().ReduceHealth(false);
+
+				BulletPhysics->collisionCallback = nullptr;
+				BulletPhysics->collisionCallbool = false;
+				isDestroyed = true;
+				model->isVisible = false;
+
+				BulletPhysics->mode = STATIC;
+			}
 			if (other->model->id =="SPACESHIP")
 			{
 				
@@ -46,6 +76,8 @@ void Bullet::LoadBullet(Model* _model)
 
 				BulletPhysics->mode = STATIC;
 			}
+
+			
 		});
 
 	engine->AddPhysicsObjects(BulletPhysics);
