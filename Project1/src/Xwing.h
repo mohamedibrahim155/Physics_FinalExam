@@ -5,6 +5,7 @@
 #include "InputManager.h"
 
 
+
 enum xWingState
 {
 	FOLLOW =0,
@@ -43,8 +44,8 @@ private:
 	Shader* defaultshader;
 	PhysicsEngine* engine;
 	Camera* camera;
-	float speed = 20;
-	float debugSphereDistance = 3.5f;
+	float speed = 35;
+	float debugSphereDistance = 7;
 
 
 	void OnKeyPressed(const int& key) override;

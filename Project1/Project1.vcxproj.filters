@@ -138,6 +138,9 @@
     <ClCompile Include="src\xWingManger.cpp">
       <Filter>SpaceShip</Filter>
     </ClCompile>
+    <ClCompile Include="src\Bullet.cpp">
+      <Filter>SpaceShip</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader.h">
@@ -264,6 +267,9 @@
       <Filter>SpaceShip</Filter>
     </ClInclude>
     <ClInclude Include="src\xWingManager.h">
+      <Filter>SpaceShip</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bullet.h">
       <Filter>SpaceShip</Filter>
     </ClInclude>
   </ItemGroup>

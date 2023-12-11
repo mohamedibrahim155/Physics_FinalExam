@@ -184,6 +184,9 @@ void ApplicationRenderer::Start()
     Point1 = new Model(*Sphere);
     Point2 = new Model(*Sphere);
 
+
+    XWingManager::GetInstance().SetRenderers(render, defaultShader, PhysicsEngine, camera);
+
      //////////////////////////////////////////////////////////
      //////SPACE SHIP ENTITY
 
@@ -192,6 +195,8 @@ void ApplicationRenderer::Start()
      spaceshipEntity->SetDeflectorModels(Sphere, Sphere);
      spaceshipEntity->LoadModel();
 
+     xWingManager = new XWingManager(render, defaultShader, PhysicsEngine, camera);
+     xWingManager->SetSpaceShip(spaceshipEntity);
 
      xWing = new Xwing(render, defaultShader, PhysicsEngine);
      xWing->SetDebugSphereModel(Sphere);
@@ -398,10 +403,11 @@ void ApplicationRenderer::PostRender()
  
     xWing->Update(deltaTime);
 
+    XWingManager::GetInstance().Update(deltaTime);
 
     glm::vec3 forward = -xWing->model->transform.GetForward() *5.0f;
 
-    camera.transform.SetPosition(xWing->model->transform.position + forward + glm::vec3(0, 1, 0));
+   // camera.transform.SetPosition(xWing->model->transform.position + forward + glm::vec3(0, 1, 0));
   //  DrawDebugModelAABB(spaceshipEntity->SpaceShipPhysics->UpdateAABB());
 }
 
@@ -578,15 +584,14 @@ void ApplicationRenderer::DrawDebugBvhNodeAABB(BvhNode* node)
 
          xWing->model->transform.SetOrientationFromDirections(up, right);
 
-        
-        // camera.transform.SetOrientationFromDirections(up, right);
+       
 
          glm::vec3 cameraForwad = xWing->model->transform.GetForward();
 
          glm::vec3 cameraright = glm::normalize(glm::cross(glm::vec3(0, 1, 0), cameraForwad));
          glm::vec3 cameraup = glm::normalize(glm::cross(cameraForwad, cameraright));
 
-         camera.transform.SetOrientationFromDirections(cameraup, cameraright);
+       //  camera.transform.SetOrientationFromDirections(cameraup, cameraright);
 
          float distance = glm::distance(SpaceShipCenter, SpaceShipCenter2);
          float stepSize = 2;
@@ -611,7 +616,7 @@ void ApplicationRenderer::DrawDebugBvhNodeAABB(BvhNode* node)
 
      if (key == GLFW_KEY_3 && action == GLFW_PRESS) 
      {
-
+         xWingManager->SpawnXwing();
      }
          /*if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
          {

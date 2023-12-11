@@ -19,6 +19,7 @@
 #include "SpaceShip.h"
 #include "InputManager.h"
 #include "Xwing.h"
+#include "xWingManager.h"
 struct ModelData
 {
 
@@ -98,6 +99,8 @@ private:
 
 	SpaceShip* spaceshipEntity;
 	Xwing* xWing;
+
+	XWingManager* xWingManager;
 
 	 int windowWidth;
 	 int  WindowHeight;

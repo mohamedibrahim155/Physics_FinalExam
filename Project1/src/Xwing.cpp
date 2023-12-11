@@ -1,5 +1,5 @@
 #include "Xwing.h"
-
+#include "xWingManager.h"
 Xwing::Xwing()
 {
 }
@@ -42,7 +42,7 @@ void Xwing::LoadModel(Model* copyModel, Texture* copyTexutre)
 
 	xWingPhysics->DoCollisionCall([this](PhysicsObject* other)
 		{
-			if (other->model->id == "SpaceShip")
+			if (other->model->id == "SPACESHIP")
 			{
 				std::cout << " X Wing sphere collided with spaceShip" << std::endl;
 			}
@@ -63,22 +63,21 @@ void Xwing::LoadModel(Model* copyModel, Texture* copyTexutre)
 			{
 
 			}
-			if (other->model->id == "SpaceShip")
+			if (other->model->id == "SPACESHIP")
 			{
 				std::cout << "Default sphere collided with spaceShip" << std::endl;
 			
+				
 				glm::vec3 oppostireDirection = -Direction;
 				Direction = oppostireDirection;
 				state = DEFLECT;
+				
+				XWingManager::GetInstance().SpawnBullet(model->transform.position, Direction);
+
 				model->transform.SetOrientationTowardsDirection(oppostireDirection);
 
-				/*glm::vec3 cameraForwad = model->transform.GetForward();
-
-				glm::vec3 cameraright = glm::normalize(glm::cross(glm::vec3(0, 1, 0), cameraForwad));
-				glm::vec3 cameraup = glm::normalize(glm::cross(cameraForwad, cameraright));
-
-				camera->transform.SetOrientationFromDirections(cameraup, cameraright);*/
-				camera->transform.SetOrientationTowardsDirection(oppostireDirection);
+				
+				//camera->transform.SetOrientationTowardsDirection(oppostireDirection);
 
 				debugSpherePhyiscs->collisionCallbool = false;
 				debugSpherePhyiscs->collisionCallback = nullptr;
@@ -94,6 +93,7 @@ void Xwing::SetDebugSphereModel(Model* model)
 	debugSphere = new Model(*model);
 	debugSphere->isWireFrame = true;
 	debugSphere->id = "XwingSphere";
+	debugSphere->transform.SetScale(glm::vec3(2));
 	render->AddModelsAndShader(debugSphere, defaultshader);
 }
 
