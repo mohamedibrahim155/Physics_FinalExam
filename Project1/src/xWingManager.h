@@ -7,7 +7,7 @@ class XWingManager
 {
 public:
 	XWingManager();
-	XWingManager(GraphicsRender& render, Shader* shader, PhysicsEngine& engine);
+	XWingManager(GraphicsRender& render, Shader* shader, PhysicsEngine& engine, Camera& camera);
 	~XWingManager();
 
 	std::vector<Xwing*> xwingList;
@@ -16,11 +16,14 @@ public:
 	void Removexwing(Xwing* xwing);
 
 	void SetSpaceShip(SpaceShip* spaceshipEntity);
+
+	void Update(float deltaTime);
 private:
 
 	GraphicsRender* render;
 	Shader* defaultshader;
 	PhysicsEngine* engine;
+	Camera* camera;
 
 
 	Texture* xwingTexture;
@@ -29,5 +32,7 @@ private:
 	Model* Point1;
 	Model* Point2;
 	SpaceShip* spaceshipEntity;
+
+	Model* currentCameraLookingTransform;
 };
 

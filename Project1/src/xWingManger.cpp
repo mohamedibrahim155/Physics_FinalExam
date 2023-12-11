@@ -5,11 +5,12 @@ XWingManager::XWingManager()
 {
 }
 
-XWingManager::XWingManager(GraphicsRender& render, Shader* shader, PhysicsEngine& engine)
+XWingManager::XWingManager(GraphicsRender& render, Shader* shader, PhysicsEngine& engine, Camera& camera)
 {
 	this->render = &render;
 	this->defaultshader = shader;
 	this->engine = &engine;
+    this->camera = &camera;
 
 	XwingModel = new Model("Models/Exam_Models/X-Wing/X-Wing_Attack_xyz_n_uv.ply", true);
 
@@ -97,6 +98,15 @@ void XWingManager::SpawnXwing()
 
     newXwing->model->transform.SetOrientationFromDirections(up, right);
 
+    glm::vec3 cameraForwad = newXwing->model->transform.GetForward();
+    glm::vec3 cameraright = glm::normalize(glm::cross(glm::vec3(0, 1, 0), cameraForwad));
+    glm::vec3 cameraup = glm::normalize(glm::cross(cameraForwad, cameraright));
+
+    camera->transform.SetOrientationFromDirections(cameraup, cameraright);
+
+    currentCameraLookingTransform = newXwing->model;  // CurrentModel
+
+
     float distance = glm::distance(SpaceShipCenter, SpaceShipCenter2);
     float stepSize = 2;
     int breakdowns = static_cast<int>(distance / stepSize);
@@ -126,4 +136,18 @@ void XWingManager::Removexwing(Xwing* xwing)
 void XWingManager::SetSpaceShip(SpaceShip* spaceshipEntity)
 {
     this->spaceshipEntity = spaceshipEntity;
+}
+
+void XWingManager::Update(float deltaTime)
+{
+    for (size_t i = 0; i < xwingList.size(); i++)
+    {
+        xwingList[i]->Update(deltaTime);
+    }
+
+   
+
+     
+    glm::vec3 backward = -currentCameraLookingTransform->transform.GetForward() * 5.0f;
+    camera->transform.SetPosition(currentCameraLookingTransform->transform.position + backward + glm::vec3(0, 1, 0));
 }
