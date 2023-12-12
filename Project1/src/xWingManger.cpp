@@ -67,6 +67,10 @@ void XWingManager::SetRenderers(GraphicsRender& render, Shader* shader, PhysicsE
 
 void XWingManager::SpawnXwing()
 {
+    if (isGameOver)
+    {
+        return;
+    }
 	Model* pointA = new Model(*Point1);
 	Model* pointB = new Model(*Point2);
 
@@ -132,6 +136,87 @@ void XWingManager::SpawnXwing()
     }
 }
 
+void XWingManager::SpawnXwing2()
+{
+    if (isGameOver)
+    {
+        return;
+    }
+
+    Model* pointA = new Model(*Point1);
+    Model* pointB = new Model(*Point2);
+
+    int getRandomNum = GetRandomIntNumber(0, 2);
+    bool isRight = getRandomNum == 0 ? true : false;
+
+    glm::vec3 center = isRight ? glm::vec3(5.25f, 12.5f, 27.8f) : glm::vec3(-5.25f, 12.5f, 27.8f);
+
+    glm::vec3 randomDir = GetRandomDirection();
+
+
+    glm::vec3 getOpposite = -randomDir;
+    randomDir = (randomDir * 40.0f + center);
+    getOpposite = (getOpposite * 40.0f + center);
+
+    glm::vec3 SpaceShipCenter = randomDir;
+    glm::vec3 SpaceShipCenter2 = getOpposite;
+
+    pointA->transform.SetPosition(SpaceShipCenter);
+    pointB->transform.SetPosition(SpaceShipCenter2);
+
+    std::cout << " POINT A: X: " << pointA->transform.position.x << " Y: " << pointA->transform.position.y << " Z: " << pointA->transform.position.z << std::endl;
+    std::cout << " POINT B: X: " << pointB->transform.position.x << " Y: " << pointB->transform.position.y << " Z: " << pointB->transform.position.z << std::endl;
+
+    render->AddModelsAndShader(pointA, defaultshader);
+    render->AddModelsAndShader(pointB, defaultshader);
+
+
+    newXwing = new Xwing(render, defaultshader, engine);
+    newXwing->StartPosition = pointA->transform.position;
+    newXwing->EndPosition = pointB->transform.position;
+    newXwing->SetCamera(camera);
+    newXwing->SetDebugSphereModel(Point1);
+
+
+    newXwing->LoadModel(XwingModel, xwingTexture);
+
+    xwingList.push_back(newXwing);
+
+    currentCameraLookingTransform = newXwing->model;  // CurrentModel
+    newXwing->model->transform.SetPosition(newXwing->StartPosition);
+
+    glm::vec3 forward = glm::normalize(pointB->transform.position - newXwing->model->transform.position);
+    glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0, 1, 0), forward));
+    glm::vec3 up = glm::normalize(glm::cross(forward, right));
+
+    newXwing->model->transform.SetOrientationFromDirections(up, right);
+
+    glm::vec3 cameraForwad = newXwing->model->transform.GetForward();
+    glm::vec3 cameraright = glm::normalize(glm::cross(glm::vec3(0, 1, 0), cameraForwad));
+    glm::vec3 cameraup = glm::normalize(glm::cross(cameraForwad, cameraright));
+
+    camera->transform.SetOrientationFromDirections(cameraup, cameraright);
+
+
+
+
+    float distance = glm::distance(SpaceShipCenter, SpaceShipCenter2);
+    float stepSize = 2;
+    int breakdowns = static_cast<int>(distance / stepSize);
+
+    glm::vec3 direction = glm::normalize(SpaceShipCenter2 - SpaceShipCenter);
+
+    for (int i = 0; i <= breakdowns; ++i) {
+        Model* model = new Model(*render->defaultBox);
+        model->transform.position = SpaceShipCenter + (static_cast<float>(i) / breakdowns) * distance * direction;
+        model->transform.scale = glm::vec3(0.1);
+
+        render->AddModelsAndShader(model, defaultshader);
+
+        // DebugLineModels.push_back(model);
+    }
+}
+
 void XWingManager::SpawnSphere(const glm::vec3 spawnPosition)
 {
     Model* sphere = new Model(*defaultSphere);
@@ -166,12 +251,30 @@ void XWingManager::SpawnBullet(const glm::vec3 startPosition, const glm::vec3 di
 void XWingManager::RemoveBullet(Bullet* bullet)
 {
     engine->RemovePhysicsObject(bullet->BulletPhysics);
+    render->RemoveModels(bullet->model);
+
     std::vector<Bullet*>::iterator it = std::find(bulletList.begin(), bulletList.end(), bullet);
     if (it != bulletList.end())
     {
         bulletList.erase(it);
     }
 
+}
+
+
+void XWingManager::RemoveXWING(Xwing* xWing)
+{
+    engine->RemovePhysicsObject(xWing->debugSpherePhyiscs);
+    engine->RemovePhysicsObject(xWing->xWingPhysics);
+    render->RemoveModels(xWing->model);
+
+    std::vector<Xwing*>::iterator it = std::find(xwingList.begin(), xwingList.end(), xWing);
+    if (it != xwingList.end())
+    {
+        xwingList.erase(it);
+      
+    }
+    //delete xWing;
 }
 
 void XWingManager::SetSpaceShip(SpaceShip* spaceshipEntity)
@@ -203,14 +306,27 @@ void XWingManager::ReduceHealth(bool isRight)
     }
 
 
-    isGameOver = (TotalhealthLeft == 0 && TotalhealthRight == 0) ? true : false;
+    if (TotalhealthLeft == 0 && TotalhealthRight)
+    {
+        isGameOver = true;
+    }
 }
 
 void XWingManager::Update(float deltaTime)
 {
+    if (IsGameOverState())
+    {
+        std::cout << "GAME OVER :" << std::endl;
+        return;
+    }
     for (size_t i = 0; i < xwingList.size(); i++)
     {
         xwingList[i]->Update(deltaTime);
+
+        if (xwingList[i]->IsDestroy())
+        {
+            RemoveXWING(xwingList[i]);
+        }
     }
 
     for (size_t i = 0; i < bulletList.size(); i++)

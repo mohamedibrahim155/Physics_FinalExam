@@ -72,6 +72,7 @@ void ApplicationRenderer::WindowInitialize(int width, int height,  std::string w
    
     SkyboxShader = new Shader("Shaders/SkyboxShader.vert", "Shaders/SkyboxShader.frag");
 
+    SpaceShipShader = new Shader("Shader/SpaceShipShader.vert", "Shaders/Light_FragmentShader2.frag");
 
     //ScrollShader = new Shader("Shaders/ScrollTexture.vert", "Shaders/ScrollTexture.frag");
     render.AssignStencilShader(StencilShader);
@@ -408,6 +409,11 @@ void ApplicationRenderer::PostRender()
  
     xWing->Update(deltaTime);
 
+    if (XWingManager::GetInstance().IsGameOverState())
+    {
+        std::cout << "Game over : " << std::endl;
+    }
+
     XWingManager::GetInstance().Update(deltaTime);
 
     glm::vec3 forward = -xWing->model->transform.GetForward() *5.0f;
@@ -622,6 +628,11 @@ void ApplicationRenderer::DrawDebugBvhNodeAABB(BvhNode* node)
      if (key == GLFW_KEY_3 && action == GLFW_PRESS) 
      {
          XWingManager::GetInstance().SpawnXwing();
+     }
+
+     if (key == GLFW_KEY_5 && action == GLFW_PRESS)
+     {
+         XWingManager::GetInstance().SpawnXwing2();
      }
 
      if (key == GLFW_KEY_4 && action == GLFW_PRESS)

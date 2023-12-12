@@ -75,6 +75,7 @@ private:
 	Shader* lightShader;
 	Shader* StencilShader;
 	Shader* SkyboxShader;
+	Shader* SpaceShipShader;
 
 	Skybox* skybox;
 
@@ -116,5 +117,7 @@ private:
 
 	 bool firstMouse;
 	 bool cameraMoveToTarget;
+
+	 bool activateShader = false;
 };
 

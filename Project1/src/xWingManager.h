@@ -17,10 +17,12 @@ public:
 
 	void SetRenderers(GraphicsRender& render, Shader* shader, PhysicsEngine& engine, Camera& camera);
 	void SpawnXwing();
+	void SpawnXwing2();
 	void SpawnSphere(const glm::vec3 spawnPosition);
 	void Removexwing(Xwing* xwing);
 	void SpawnBullet(const glm::vec3 startPosition, const glm::vec3 direction);
 	void RemoveBullet(Bullet* bullet);
+	void RemoveXWING(Xwing* xWing);
 
 
 	void SetSpaceShip(SpaceShip* spaceshipEntity);

@@ -99,11 +99,20 @@ void Xwing::SetDebugSphereModel(Model* model)
 
 void Xwing::Update(float deltaTime)
 {
+	if (isDestroy)
+	{
+		return;
+	}
 	if (state ==FOLLOW)
 	{
 		Direction = model->transform.GetForward();
 	}
 	
+	float distance = glm::distance(StartPosition, model->transform.position);
+	if (distance>200)
+	{
+		isDestroy = true;
+	}
 
 	xWingPhysics->velocity = Direction * speed;
 	glm::vec3 forward = model->transform.GetForward() * debugSphereDistance;

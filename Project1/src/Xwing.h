@@ -38,6 +38,8 @@ public:
 	glm::vec3 EndPosition;
 
 	glm::vec3 Direction;
+
+	bool IsDestroy() { return isDestroy; }
 private:
 
 	GraphicsRender* render;
@@ -47,6 +49,7 @@ private:
 	float speed = 35;
 	float debugSphereDistance = 7;
 
+	bool isDestroy = false;
 
 	void OnKeyPressed(const int& key) override;
 	void OnKeyReleased(const int& key) override;
