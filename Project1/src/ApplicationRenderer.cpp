@@ -623,6 +623,81 @@ void ApplicationRenderer::DrawDebugBvhNodeAABB(BvhNode* node)
      {
          xWingManager->SpawnXwing();
      }
+
+     if (key == GLFW_KEY_4 && action == GLFW_PRESS)
+     {
+         if (DebugLineModels.size() > 0)
+         {
+             for (size_t i = 0; i < DebugLineModels.size(); i++)
+             {
+                 render.RemoveModels(DebugLineModels[i]);
+             }
+         }
+         DebugLineModels.clear();
+
+         int getRandomNum = GetRandomIntNumber(0, 2);
+         bool isRight = getRandomNum == 0 ? true : false;
+
+         glm::vec3 center =  isRight ? glm::vec3(5.25f, 12.5f, 27.8f) : glm::vec3(-5.25f, 12.5f, 27.8f);
+
+         glm::vec3 randomDir = GetRandomDirection();
+
+
+         glm::vec3 getOpposite = -randomDir;
+         randomDir = (randomDir * 40.0f + center);
+         getOpposite = (getOpposite * 40.0f + center) ;
+
+         glm::vec3 SpaceShipCenter = randomDir;
+         glm::vec3 SpaceShipCenter2 = getOpposite;
+
+         xWing->state = FOLLOW;
+         Point1->transform.SetPosition(SpaceShipCenter);
+         Point2->transform.SetPosition(SpaceShipCenter2);
+
+
+
+         std::cout << " POINT A: X: " << Point1->transform.position.x << " Y: " << Point1->transform.position.y << " Z: " << Point1->transform.position.z << std::endl;
+         std::cout << " POINT B: X: " << Point2->transform.position.x << " Y: " << Point2->transform.position.y << " Z: " << Point2->transform.position.z << std::endl;
+
+         xWing->StartPosition = Point1->transform.position;
+         xWing->EndPosition = Point2->transform.position;
+
+         xWing->model->transform.SetPosition(xWing->StartPosition);
+
+         glm::vec3 forward = glm::normalize(Point2->transform.position - xWing->model->transform.position);
+         glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0, 1, 0), forward));
+         glm::vec3 up = glm::normalize(glm::cross(forward, right));
+
+         xWing->model->transform.SetOrientationFromDirections(up, right);
+
+
+
+         glm::vec3 cameraForwad = xWing->model->transform.GetForward();
+
+         glm::vec3 cameraright = glm::normalize(glm::cross(glm::vec3(0, 1, 0), cameraForwad));
+         glm::vec3 cameraup = glm::normalize(glm::cross(cameraForwad, cameraright));
+
+         //  camera.transform.SetOrientationFromDirections(cameraup, cameraright);
+
+         float distance = glm::distance(SpaceShipCenter, SpaceShipCenter2);
+         float stepSize = 2;
+         int breakdowns = static_cast<int>(distance / stepSize);
+
+         glm::vec3 direction = glm::normalize(SpaceShipCenter2 - SpaceShipCenter);
+
+         for (int i = 0; i <= breakdowns; ++i) {
+             Model* model = new Model(*defaultBox);
+             model->transform.position = SpaceShipCenter + (static_cast<float>(i) / breakdowns) * distance * direction;
+             model->transform.scale = glm::vec3(0.1);
+
+             render.AddModelsAndShader(model, defaultShader);
+
+             DebugLineModels.push_back(model);
+         }
+
+
+
+     }
          /*if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
          {
              recusiveCount--;

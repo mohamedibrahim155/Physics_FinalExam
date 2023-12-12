@@ -57,12 +57,12 @@ void XWingManager::SetRenderers(GraphicsRender& render, Shader* shader, PhysicsE
     defaultSphere = new Model("Models/DefaultSphere/Sphere_1_unit_Radius.ply");
 
     deflector1 = new Deflector(this->render, defaultshader, this->engine);
-    deflector1->SetSide(false);
-    deflector1->LoadDeflector(defaultSphere, glm::vec3(5.25f, 12.5f, 27.8f));     // left 
+    deflector1->SetSide(true);
+    deflector1->LoadDeflector(defaultSphere, glm::vec3(5.25f, 12.5f, 27.8f));     // right
 
     deflector2 = new Deflector(this->render, defaultshader, this->engine);
-    deflector1->SetSide(true);
-    deflector2->LoadDeflector(defaultSphere, glm::vec3(-5.25f, 12.5f, 27.8f));    // right
+    deflector1->SetSide(false);
+    deflector2->LoadDeflector(defaultSphere, glm::vec3(-5.25f, 12.5f, 27.8f));    // left  
 }
 
 void XWingManager::SpawnXwing()
