@@ -67,12 +67,13 @@ void ApplicationRenderer::WindowInitialize(int width, int height,  std::string w
 
   
     defaultShader = new Shader("Shaders/Light_VertexShader.vert", "Shaders/Light_FragmentShader2.frag");
+    starDestroyShader = new Shader("Shaders/StarDestroyer.vert", "Shaders/StarDestroyer.frag");
     lightShader = new Shader("Shaders/lighting.vert", "Shaders/lighting.frag", SOLID);
     StencilShader = new Shader("Shaders/StencilOutline.vert", "Shaders/StencilOutline.frag");
    
     SkyboxShader = new Shader("Shaders/SkyboxShader.vert", "Shaders/SkyboxShader.frag");
 
-    SpaceShipShader = new Shader("Shader/SpaceShipShader.vert", "Shaders/Light_FragmentShader2.frag");
+   // SpaceShipShader = new Shader("Shaders/Light_VertexShader.vert", "Shaders/Light_FragmentShader3.frag");
 
     //ScrollShader = new Shader("Shaders/ScrollTexture.vert", "Shaders/ScrollTexture.frag");
     render.AssignStencilShader(StencilShader);
@@ -175,7 +176,7 @@ void ApplicationRenderer::Start()
 
     render.SetLightShader(lightShader);
 
-    Model* Sphere = new Model((char*)"Models/DefaultSphere/Sphere_1_unit_Radius.ply", true);
+    Model* Sphere = new Model((char*)"Models/DefaultSphere/Sphere_1_unit_Radius.ply");
 
     xWingModel = new Model("Models/Exam_Models/X-Wing/X-Wing_Attack_xyz_n_uv.ply", true);
 
@@ -185,29 +186,20 @@ void ApplicationRenderer::Start()
     Point1 = new Model(*Sphere);
     Point2 = new Model(*Sphere);
 
-
+    Model* directionLightModel = new Model(*Sphere);
+    directionLightModel->transform.SetPosition(glm::vec3(1.0f, 3.0f, 0.0f));
+    directionLightModel->transform.SetRotation(glm::vec3(-60, 0, 0));
+    directionLightModel->transform.SetScale(glm::vec3(0.1f));
     XWingManager::GetInstance().SetRenderers(render, defaultShader, PhysicsEngine, camera);
 
      //////////////////////////////////////////////////////////
      //////SPACE SHIP ENTITY
 
 
-     spaceshipEntity = new SpaceShip(render, defaultShader, PhysicsEngine,camera);
-   //  spaceshipEntity->SetDeflectorModels(Sphere, Sphere);
-     spaceshipEntity->LoadModel();
-
-
-
-     xWingManager = new XWingManager(render, defaultShader, PhysicsEngine, camera);
-
-     xWingManager->SetSpaceShip(spaceshipEntity);
-     XWingManager::GetInstance().SetSpaceShip(spaceshipEntity);
-
-
-     xWing = new Xwing(render, defaultShader, PhysicsEngine);
-     xWing->SetDebugSphereModel(Sphere);
-     xWing->SetCamera(&camera);
-     xWing->LoadModel(xWingModel,xwingTexture);
+  
+    spaceshipEntity = new SpaceShip(render, starDestroyShader, PhysicsEngine, camera);
+    //  spaceshipEntity->SetDeflectorModels(Sphere, Sphere);
+    spaceshipEntity->LoadModel();
 
      cAABB  spaceShipAABB = spaceshipEntity->SpaceShipPhysics->UpdateAABB();
      glm::vec3 center = 0.5f * (spaceShipAABB.minV + spaceShipAABB.maxV);
@@ -246,6 +238,21 @@ void ApplicationRenderer::Start()
      glm::vec3 SpaceShipCenter2 = getOpposite;
     //  glm::vec3 SpaceShipCenter = GetRandomPoint1();
   //   glm::vec3 SpaceShipCenter2 = GetRandomPoint2();
+
+    
+
+
+    // xWingManager = new XWingManager(render, defaultShader, PhysicsEngine, camera);
+
+   //  xWingManager->SetSpaceShip(spaceshipEntity);
+
+     XWingManager::GetInstance().SetSpaceShip(spaceshipEntity);
+
+
+     xWing = new Xwing(render, defaultShader, PhysicsEngine);
+     xWing->SetDebugSphereModel(Sphere);
+     xWing->SetCamera(&camera);
+     xWing->LoadModel(xWingModel, xwingTexture);
     
 
      Point1->transform.SetPosition(SpaceShipCenter);
@@ -264,11 +271,8 @@ void ApplicationRenderer::Start()
      XWingManager::GetInstance().SpawnXwing();
 
 #pragma region Lights
+     
 
-  Model* directionLightModel = new Model(*Sphere);
-  directionLightModel->transform.SetPosition(glm::vec3(0, 5, 0));
-  directionLightModel->transform.SetRotation(glm::vec3(-60, 0, 0));
-  directionLightModel->transform.SetScale(glm::vec3(0.1f));
    Light directionLight;
    directionLight.lightType = LightType::DIRECTION_LIGHT;
    directionLight.lightModel = directionLightModel;
@@ -295,13 +299,20 @@ void ApplicationRenderer::Start()
      //LightRenderer
      lightManager.AddNewLight(directionLight);
 
-     lightManager.SetUniforms(defaultShader->ID);
+   /*  lightManager.SetUniforms(starDestroyShader->ID);
+     lightManager.SetUniforms(defaultShader->ID);*/
    
+     starDestroyShader->Bind();
+    // starDestroyShader->setInt("skybox", 0);
 
      defaultShader->Bind();
-     defaultShader->setInt("skybox", 0);
+   //  defaultShader->setInt("skybox", 0);
+    
+    
+   
+    // SpaceShipShader->setInt("skybox", 0);
 
-
+    
     
 }
 
@@ -335,6 +346,8 @@ void ApplicationRenderer::Render()
         glm::mat4 _skyboxview = glm::mat4(glm::mat3(camera.GetViewMatrix()));
 
 
+        glm::mat4 _projection2 = glm::perspective(glm::radians(camera.Zoom), (float)windowWidth / (float)WindowHeight, 0.1f, 1000.0f);
+        glm::mat4 _view2 = camera.GetViewMatrix();
         PreRender(); //Update call BEFORE  DRAW
 
         glDepthFunc(GL_LEQUAL);
@@ -358,6 +371,18 @@ void ApplicationRenderer::Render()
          defaultShader->setFloat("time", scrollTime);
          defaultShader->setBool("isDepthBuffer", false);
 
+
+         starDestroyShader->Bind();
+
+        lightManager.UpdateUniformValues(starDestroyShader->ID);
+        starDestroyShader->setMat4("projection", _projection2);
+        starDestroyShader->setMat4("view", _view2);
+        starDestroyShader->setVec3("viewPos", camera.transform.position.x, camera.transform.position.y, camera.transform.position.z);
+        starDestroyShader->setFloat("time", scrollTime);
+        starDestroyShader->setBool("isDepthBuffer", false);
+         starDestroyShader->setFloat("explosionOffset", explotionOffset);
+        starDestroyShader->setBool("isDestroyed", isBlast);
+
          lightShader->Bind();
          lightShader->setVec3("objectColor", glm::vec3(1, 1, 1));
          lightShader->setMat4("projection", _projection);
@@ -371,7 +396,7 @@ void ApplicationRenderer::Render()
          ScrollShader->setMat4("ProjectionMatrix", _projection);*/
         
 
-       
+        
 
          
   
@@ -386,8 +411,10 @@ void ApplicationRenderer::Render()
 
          }
        
+         DeflectorMessage = "LEFT HEALTH : " + std::to_string(XWingManager::GetInstance().TotalhealthLeft) + " RIGHT HEALTH : " + std::to_string( XWingManager::GetInstance().TotalhealthRight);
+         glfwSetWindowTitle(window, DeflectorMessage.c_str());
     
-        
+
       
      
 
@@ -412,7 +439,14 @@ void ApplicationRenderer::PostRender()
     if (XWingManager::GetInstance().IsGameOverState())
     {
         std::cout << "Game over : " << std::endl;
+        DeflectorMessage = "GAME OVER";
+        explotionOffset += deltaTime * 500;
+
+        glfwSetWindowTitle(window, DeflectorMessage.c_str());
+        return;
     }
+
+
 
     XWingManager::GetInstance().Update(deltaTime);
 
@@ -541,170 +575,25 @@ void ApplicationRenderer::DrawDebugBvhNodeAABB(BvhNode* node)
          }
          DebugLineModels.clear();
 
-         cAABB  spaceShipAABB = spaceshipEntity->SpaceShipPhysics->UpdateAABB();
-         glm::vec3 center = 0.5f * (spaceShipAABB.minV + spaceShipAABB.maxV);
 
-         float minX = spaceShipAABB.minV.x - 20;
-         float minY = spaceShipAABB.minV.y - 20;
-         float minZ = spaceShipAABB.minV.z - 20;
-
-         float maxX = spaceShipAABB.maxV.x + 20;
-         float maxY = spaceShipAABB.maxV.y + 20;
-         float maxZ = spaceShipAABB.maxV.z + 20;
-
-         float getRandomNegX = GetRandomFloatNumber(minX, spaceShipAABB.minV.x);
-         float getRandomNegY = GetRandomFloatNumber(minY, spaceShipAABB.minV.y);
-         float getRandomNegZ = GetRandomFloatNumber(minZ, spaceShipAABB.minV.z);
-
-
-         float getRandomPosX = GetRandomFloatNumber(spaceShipAABB.maxV.x, maxX);
-         float getRandomPosY = GetRandomFloatNumber(spaceShipAABB.maxV.y, maxY);
-         float getRandomPosZ = GetRandomFloatNumber(spaceShipAABB.maxV.z, maxZ);
-
-         glm::vec3 randomDir = GetRandomDirection();
-
-         glm::vec3 getOpposite = -randomDir;
-         randomDir = (randomDir + center) * 40.0f;
-         getOpposite = (getOpposite + center) * 40.0f;
-
-         glm::vec3 offset(spaceShipAABB.minV);
-         // glm::vec3 SpaceShipCenter = center + offset;
-      //   glm::vec3 SpaceShipCenter = center + glm::vec3(getRandomNegX, getRandomNegY, getRandomNegZ);
-      //   glm::vec3 SpaceShipCenter2 = center + glm::vec3(getRandomPosX, getRandomPosY, getRandomPosZ);
-
-         glm::vec3 SpaceShipCenter = GetRandomPoint1();
-         glm::vec3 SpaceShipCenter2 = GetRandomPoint2();
-
-         //glm::vec3 SpaceShipCenter = randomDir;
-       //  glm::vec3 SpaceShipCenter2 = getOpposite;
-         xWing->state = FOLLOW;
-         Point1->transform.SetPosition(SpaceShipCenter);
-         Point2->transform.SetPosition(SpaceShipCenter2);
-
-         std::cout << " POINT A: X: " << Point1->transform.position.x << " Y: " << Point1->transform.position.y << " Z: " << Point1->transform.position.z << std::endl;
-         std::cout << " POINT B: X: " << Point2->transform.position.x << " Y: " << Point2->transform.position.y << " Z: " << Point2->transform.position.z << std::endl;
-
-         xWing->StartPosition = Point1->transform.position;
-         xWing->EndPosition = Point2->transform.position;
-
-         xWing->model->transform.SetPosition(xWing->StartPosition);
-
-         glm::vec3 forward = glm::normalize(Point2->transform.position - xWing->model->transform.position);
-         glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0, 1, 0), forward));
-         glm::vec3 up = glm::normalize(glm::cross(forward, right));
-
-         xWing->model->transform.SetOrientationFromDirections(up, right);
-
-       
-
-         glm::vec3 cameraForwad = xWing->model->transform.GetForward();
-
-         glm::vec3 cameraright = glm::normalize(glm::cross(glm::vec3(0, 1, 0), cameraForwad));
-         glm::vec3 cameraup = glm::normalize(glm::cross(cameraForwad, cameraright));
-
-       //  camera.transform.SetOrientationFromDirections(cameraup, cameraright);
-
-         float distance = glm::distance(SpaceShipCenter, SpaceShipCenter2);
-         float stepSize = 2;
-         int breakdowns = static_cast<int>(distance / stepSize);
-
-         glm::vec3 direction = glm::normalize(SpaceShipCenter2 - SpaceShipCenter);
-
-         for (int i = 0; i <= breakdowns; ++i) {
-             Model* model = new Model(*defaultBox);
-             model->transform.position = SpaceShipCenter + (static_cast<float>(i) / breakdowns) * distance * direction;
-             model->transform.scale = glm::vec3(0.1);
-           
-             render.AddModelsAndShader(model, defaultShader);
-
-             DebugLineModels.push_back(model);
-         }
-
-         
+         XWingManager::GetInstance().SpawnXwing();
 
 
      }
 
      if (key == GLFW_KEY_3 && action == GLFW_PRESS) 
      {
-         XWingManager::GetInstance().SpawnXwing();
+         XWingManager::GetInstance().SpawnXwing2();
      }
 
      if (key == GLFW_KEY_5 && action == GLFW_PRESS)
      {
-         XWingManager::GetInstance().SpawnXwing2();
+       //  XWingManager::GetInstance().SpawnXwing2();
      }
 
      if (key == GLFW_KEY_4 && action == GLFW_PRESS)
      {
-         if (DebugLineModels.size() > 0)
-         {
-             for (size_t i = 0; i < DebugLineModels.size(); i++)
-             {
-                 render.RemoveModels(DebugLineModels[i]);
-             }
-         }
-         DebugLineModels.clear();
-
-         int getRandomNum = GetRandomIntNumber(0, 2);
-         bool isRight = getRandomNum == 0 ? true : false;
-
-         glm::vec3 center =  isRight ? glm::vec3(5.25f, 12.5f, 27.8f) : glm::vec3(-5.25f, 12.5f, 27.8f);
-
-         glm::vec3 randomDir = GetRandomDirection();
-
-
-         glm::vec3 getOpposite = -randomDir;
-         randomDir = (randomDir * 40.0f + center);
-         getOpposite = (getOpposite * 40.0f + center) ;
-
-         glm::vec3 SpaceShipCenter = randomDir;
-         glm::vec3 SpaceShipCenter2 = getOpposite;
-
-         xWing->state = FOLLOW;
-         Point1->transform.SetPosition(SpaceShipCenter);
-         Point2->transform.SetPosition(SpaceShipCenter2);
-
-
-
-         std::cout << " POINT A: X: " << Point1->transform.position.x << " Y: " << Point1->transform.position.y << " Z: " << Point1->transform.position.z << std::endl;
-         std::cout << " POINT B: X: " << Point2->transform.position.x << " Y: " << Point2->transform.position.y << " Z: " << Point2->transform.position.z << std::endl;
-
-         xWing->StartPosition = Point1->transform.position;
-         xWing->EndPosition = Point2->transform.position;
-
-         xWing->model->transform.SetPosition(xWing->StartPosition);
-
-         glm::vec3 forward = glm::normalize(Point2->transform.position - xWing->model->transform.position);
-         glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0, 1, 0), forward));
-         glm::vec3 up = glm::normalize(glm::cross(forward, right));
-
-         xWing->model->transform.SetOrientationFromDirections(up, right);
-
-
-
-         glm::vec3 cameraForwad = xWing->model->transform.GetForward();
-
-         glm::vec3 cameraright = glm::normalize(glm::cross(glm::vec3(0, 1, 0), cameraForwad));
-         glm::vec3 cameraup = glm::normalize(glm::cross(cameraForwad, cameraright));
-
-         //  camera.transform.SetOrientationFromDirections(cameraup, cameraright);
-
-         float distance = glm::distance(SpaceShipCenter, SpaceShipCenter2);
-         float stepSize = 2;
-         int breakdowns = static_cast<int>(distance / stepSize);
-
-         glm::vec3 direction = glm::normalize(SpaceShipCenter2 - SpaceShipCenter);
-
-         for (int i = 0; i <= breakdowns; ++i) {
-             Model* model = new Model(*defaultBox);
-             model->transform.position = SpaceShipCenter + (static_cast<float>(i) / breakdowns) * distance * direction;
-             model->transform.scale = glm::vec3(0.1);
-
-             render.AddModelsAndShader(model, defaultShader);
-
-             DebugLineModels.push_back(model);
-         }
+         
 
 
 
@@ -755,6 +644,10 @@ void ApplicationRenderer::DrawDebugBvhNodeAABB(BvhNode* node)
 
          }*/
          
+     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+     {
+         isBlast = !isBlast;
+     }
  }
 
  void ApplicationRenderer::MouseCallBack(GLFWwindow* window, double xposIn, double yposIn)

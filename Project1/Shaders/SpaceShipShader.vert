@@ -18,26 +18,34 @@ uniform float time = 0;
 uniform bool isScrollingTexture;
 
 uniform float explosionOffset;
+uniform bool isBlast;
 
 // function prototypes
 
 void main()
 {
-	vec3 explosionOffset =aPos + aNormal * explosionOffset;
-    FragPosition = vec3(model * vec4(explosionOffset, 1.0));
-    Normal =  mat3(transpose(inverse(model))) * aNormal;
-	if(isScrollingTexture)
-	{
+    
+    vec3 explodedPosition = aPos;
 
-	  TextureCoordinates = aTexCoords + vec2(0.1* time , 0.2 );
-	}
-	else
-	{	
-	  TextureCoordinates = aTexCoords;
-	}
-	 meshColour = aColor;
-	//gl_Position = projection * view * model;
-	gl_Position = projection * view * vec4(FragPosition, 1.0);
+    if(isBlast)
+    {
+      explodedPosition = aPos + aNormal * explosionOffset;
+    }
+
+    FragPosition = vec3(model * vec4(explodedPosition, 1.0));
+    Normal = mat3(transpose(inverse(model))) * aNormal;
+
+    if (isScrollingTexture)
+    {
+        TextureCoordinates = aTexCoords + vec2(0.1 * time, 0.2);
+    }
+    else
+    {
+        TextureCoordinates = aTexCoords;
+    }
+
+    meshColour = aColor;
+    gl_Position = projection * view * vec4(FragPosition, 1.0);
 }
 
 

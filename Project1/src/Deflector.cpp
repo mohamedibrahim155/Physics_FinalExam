@@ -28,6 +28,7 @@ void Deflector::LoadDeflector(Model* _model, const glm::vec3& Startposition)
 	}
 	model->transform.SetPosition(glm::vec3(Startposition));
 	this->model->transform.SetScale(glm::vec3(1.2f));
+	this->model->isWireFrame = true;
 	render->AddModelsAndShader(model, defaultshader);
 
 

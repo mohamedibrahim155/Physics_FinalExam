@@ -75,7 +75,8 @@ private:
 	Shader* lightShader;
 	Shader* StencilShader;
 	Shader* SkyboxShader;
-	Shader* SpaceShipShader;
+
+	Shader* starDestroyShader;
 
 	Skybox* skybox;
 
@@ -103,6 +104,8 @@ private:
 
 	XWingManager* xWingManager;
 
+	std::string DeflectorMessage;
+
 	 int windowWidth;
 	 int  WindowHeight;
 	 int selectedModelCount = 0;
@@ -114,9 +117,11 @@ private:
 	 float lastFrame;
 
 	 float scrollTime;
+	 float explotionOffset = 0;
 
 	 bool firstMouse;
 	 bool cameraMoveToTarget;
+	 bool isBlast = false;
 
 	 bool activateShader = false;
 };

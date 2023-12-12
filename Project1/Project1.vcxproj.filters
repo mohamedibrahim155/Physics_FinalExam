@@ -297,5 +297,6 @@
     <None Include="Shaders\SkyboxShader.frag" />
     <None Include="Shaders\Light_FragmentShader2.frag" />
     <None Include="Shaders\SpaceShipShader.vert" />
+    <None Include="Shaders\Light_FragmentShader3.frag" />
   </ItemGroup>
 </Project>

@@ -209,7 +209,7 @@ void XWingManager::SpawnXwing2()
     for (int i = 0; i <= breakdowns; ++i) {
         Model* model = new Model(*render->defaultBox);
         model->transform.position = SpaceShipCenter + (static_cast<float>(i) / breakdowns) * distance * direction;
-        model->transform.scale = glm::vec3(0.1);
+        model->transform.scale = glm::vec3(0.05f);
 
         render->AddModelsAndShader(model, defaultshader);
 
@@ -306,7 +306,7 @@ void XWingManager::ReduceHealth(bool isRight)
     }
 
 
-    if (TotalhealthLeft == 0 && TotalhealthRight)
+    if (TotalhealthLeft == 0 && TotalhealthRight == 0)
     {
         isGameOver = true;
     }
@@ -346,7 +346,15 @@ void XWingManager::Update(float deltaTime)
 
 bool XWingManager::IsGameOverState()
 {
-    return isGameOver;
+    if (isGameOver)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+   
 }
 
 XWingManager& XWingManager::GetInstance()

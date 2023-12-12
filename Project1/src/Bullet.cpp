@@ -20,7 +20,8 @@ void Bullet::LoadBullet(Model* _model)
 	model = new Model(*_model);
 	model->id = "BULLET";
 	model->transform.SetPosition(glm::vec3(starPosition));
-	this->model->transform.SetScale(glm::vec3(1));
+	this->model->transform.SetScale(glm::vec3(0.1f));
+
 	this->model->transform.SetOrientationTowardsDirection(Direction);
 	render->AddModelsAndShader(model, defaultshader);
 
@@ -88,7 +89,7 @@ void Bullet::LoadBullet()
 	this->model = new Model("Models/Exam_Models/TearDropBullet.ply");
 	this->model->id = "BULLET";
 	this->model->transform.SetPosition(glm::vec3(starPosition));
-	this->model->transform.SetScale(glm::vec3(0.2f));
+	this->model->transform.SetScale(glm::vec3(0.1f));
 	this->model->transform.SetOrientationTowardsDirection(Direction);
 
 	render->AddModelsAndShader(model, defaultshader);

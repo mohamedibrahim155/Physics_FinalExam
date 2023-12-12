@@ -29,7 +29,7 @@ private:
 	glm::vec3 starPosition = glm::vec3(0);
 	glm::vec3 Direction = glm::vec3(0);
 
-	float speed = 20;
+	float speed = 25;
 
 	bool isDestroyed = false;
 	

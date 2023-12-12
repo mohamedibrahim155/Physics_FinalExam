@@ -31,6 +31,9 @@ public:
 	void Update(float deltaTime);
 	bool IsGameOverState();
 	static XWingManager& GetInstance();
+
+	int TotalhealthRight = 100;
+	int TotalhealthLeft = 100;
 private:
 
 	GraphicsRender* render;
@@ -56,8 +59,7 @@ private:
 
 	Model* currentCameraLookingTransform;
 
-	int TotalhealthRight = 100;
-	int TotalhealthLeft = 100;
+	
 
 	bool isGameOver = false;
 

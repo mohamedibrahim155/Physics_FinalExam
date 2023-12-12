@@ -31,7 +31,8 @@ void Xwing::LoadModel(Model* copyModel, Texture* copyTexutre)
 	//loadWingTexture->LoadTexture("Models/Exam_Models/X-Wing/X-Wing-Texture.jpg", "diffuse_Texture");
 	model->meshes[0]->meshMaterial->diffuseTexture = copyTexutre;
 	model->id = "Xwing";
-	model->transform.SetScale(glm::vec3(0.05f));
+	
+	model->transform.SetScale(glm::vec3(0.1f));
 	render->AddModelsAndShader(model, defaultshader);
 
 
@@ -92,6 +93,7 @@ void Xwing::SetDebugSphereModel(Model* model)
 {
 	debugSphere = new Model(*model);
 	debugSphere->isWireFrame = true;
+	debugSphere->isVisible = false;
 	debugSphere->id = "XwingSphere";
 	debugSphere->transform.SetScale(glm::vec3(2));
 	render->AddModelsAndShader(debugSphere, defaultshader);
