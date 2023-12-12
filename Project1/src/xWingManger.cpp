@@ -70,41 +70,8 @@ void XWingManager::SpawnXwing()
 	Model* pointA = new Model(*Point1);
 	Model* pointB = new Model(*Point2);
 
-    cAABB  spaceShipAABB = spaceshipEntity->SpaceShipPhysics->UpdateAABB();
-    glm::vec3 center = 0.5f * (spaceShipAABB.minV + spaceShipAABB.maxV);
+  
 
-    float minX = spaceShipAABB.minV.x - 20;
-    float minY = spaceShipAABB.minV.y - 20;
-    float minZ = spaceShipAABB.minV.z - 20;
-
-    float centerX = center.x;
-
-    float maxX = spaceShipAABB.maxV.x + 20;
-    float maxY = spaceShipAABB.maxV.y + 20;
-    float maxZ = spaceShipAABB.maxV.z + 20;
-
-    float getRandomNegX = GetRandomFloatNumber(minX, spaceShipAABB.minV.x);
-    float getRandomNegY = GetRandomFloatNumber(minY, spaceShipAABB.minV.y);
-    float getRandomNegZ = GetRandomFloatNumber(minZ, spaceShipAABB.minV.z);
-
-
-    float getRandomPosX = GetRandomFloatNumber(spaceShipAABB.maxV.x, maxX);
-    float getRandomPosY = GetRandomFloatNumber(spaceShipAABB.maxV.y, maxY);
-    float getRandomPosZ = GetRandomFloatNumber(spaceShipAABB.maxV.z, maxZ);
-
-    glm::vec3 randomDir = GetRandomDirection();
-
-    glm::vec3 getOpposite = -randomDir;
-    randomDir = (randomDir + center) * 40.0f;
-    getOpposite = (getOpposite + center) * 40.0f;
-
-    glm::vec3 offset(spaceShipAABB.minV);
-    // glm::vec3 SpaceShipCenter = center + offset;
-    // glm::vec3 SpaceShipCenter = center + glm::vec3(getRandomNegX, getRandomNegY, getRandomNegZ);
-    // glm::vec3 SpaceShipCenter2 = center + glm::vec3(getRandomPosX, getRandomPosY, getRandomPosZ);
-
-  //  glm::vec3 SpaceShipCenter = randomDir;
-  //  glm::vec3 SpaceShipCenter2 = getOpposite;
       glm::vec3 SpaceShipCenter = GetRandomPoint1();
      glm::vec3 SpaceShipCenter2 = GetRandomPoint2();
 
@@ -119,7 +86,7 @@ void XWingManager::SpawnXwing()
     render->AddModelsAndShader(pointB, defaultshader);
 
 
-	Xwing* newXwing = new Xwing(render, defaultshader, engine);
+	newXwing = new Xwing(render, defaultshader, engine);
     newXwing->StartPosition = pointA->transform.position;
     newXwing->EndPosition = pointB->transform.position;
     newXwing->SetCamera(camera);
@@ -143,7 +110,7 @@ void XWingManager::SpawnXwing()
     glm::vec3 cameraright = glm::normalize(glm::cross(glm::vec3(0, 1, 0), cameraForwad));
     glm::vec3 cameraup = glm::normalize(glm::cross(cameraForwad, cameraright));
 
-   // camera->transform.SetOrientationFromDirections(cameraup, cameraright);
+    camera->transform.SetOrientationFromDirections(cameraup, cameraright);
 
     
 
@@ -257,8 +224,8 @@ void XWingManager::Update(float deltaTime)
     }
 
      
-   // glm::vec3 backward = -currentCameraLookingTransform->transform.GetForward() * 5.0f;
-   // camera->transform.SetPosition(currentCameraLookingTransform->transform.position + backward + glm::vec3(0, 1, 0));
+    glm::vec3 backward = -currentCameraLookingTransform->transform.GetForward() * 5.0f;
+    camera->transform.SetPosition(currentCameraLookingTransform->transform.position + backward + glm::vec3(0, 1, 0));
 }
 
 bool XWingManager::IsGameOverState()

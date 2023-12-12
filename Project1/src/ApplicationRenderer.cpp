@@ -260,7 +260,7 @@ void ApplicationRenderer::Start()
      render.AddModelsAndShader(Point2, defaultShader);
 
 
-  
+     XWingManager::GetInstance().SpawnXwing();
 
 #pragma region Lights
 
@@ -621,7 +621,7 @@ void ApplicationRenderer::DrawDebugBvhNodeAABB(BvhNode* node)
 
      if (key == GLFW_KEY_3 && action == GLFW_PRESS) 
      {
-         xWingManager->SpawnXwing();
+         XWingManager::GetInstance().SpawnXwing();
      }
 
      if (key == GLFW_KEY_4 && action == GLFW_PRESS)

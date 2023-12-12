@@ -36,7 +36,7 @@ private:
 	PhysicsEngine* engine;
 	Camera* camera;
 
-
+	Xwing* newXwing;
 	Texture* xwingTexture;
 	Model* XwingModel;
 
